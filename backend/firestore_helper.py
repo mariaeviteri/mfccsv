@@ -8,6 +8,7 @@ def add_ticket(ticket_number, name, table_number):
         "ticket_number": ticket_number,
         "name": name,
         "checked_in": True,
+        "paid": True,
         "table_number": table_number
     })
 
