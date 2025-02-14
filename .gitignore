@@ -1,1 +1,27 @@
-config/firebase_credentials.json
+# Node.js dependencies
+node_modules/
+
+# Build directories
+/dist/
+/build/
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE files (VS Code, etc.)
+.vscode/
+.idea/
+
+# MacOS system files
+.DS_Store
+
+# npm-debug files
+npm-debug.log*
+
+# Yarn v2 (Berry) file
+.yarn/*
