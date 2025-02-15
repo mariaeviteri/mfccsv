@@ -25,3 +25,4 @@ npm-debug.log*
 
 # Yarn v2 (Berry) file
 .yarn/*
+.vercel
