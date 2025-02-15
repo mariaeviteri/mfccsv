@@ -1,5 +1,3 @@
-// this code is essentially the front end for the scanner
-
 import React, { useEffect, useRef, useState } from "react";
 import Quagga from "quagga";
 
@@ -10,7 +8,10 @@ const BarcodeScanner = ({ onScanSuccess }) => {
 
   useEffect(() => {
     return () => {
-      Quagga.stop(); // Stop the scanner when component unmounts
+      if (Quagga._scannerRunning) {
+        Quagga.stop();
+        Quagga._scannerRunning = false;
+      }
     };
   }, []);
 
@@ -18,18 +19,30 @@ const BarcodeScanner = ({ onScanSuccess }) => {
     setError("");
     setScanning(true);
 
+    if (!videoRef.current) {
+      setError("Error: Video element not found.");
+      setScanning(false);
+      return;
+    }
+
+    // Prevent multiple initializations
+    if (Quagga._scannerRunning) {
+      return;
+    }
+
     Quagga.init(
       {
         inputStream: {
           type: "LiveStream",
-          target: videoRef.current,
+          target: videoRef.current, // Ensure video element exists
           constraints: {
-            facingMode: "environment", // Use back camera if available
+            facingMode: "environment", // Use back camera
           },
         },
         decoder: {
-          readers: ["code_128_reader", "ean_reader", "ean_8_reader"], // Adjust based on your barcodes
+          readers: ["code_128_reader", "ean_reader", "ean_8_reader"], // Adjust barcode types
         },
+        locate: true,
       },
       (err) => {
         if (err) {
@@ -37,14 +50,19 @@ const BarcodeScanner = ({ onScanSuccess }) => {
           setScanning(false);
           return;
         }
+
+        Quagga._scannerRunning = true;
         Quagga.start();
       }
     );
 
     Quagga.onDetected((result) => {
-      Quagga.stop();
-      setScanning(false);
-      onScanSuccess(result.codeResult.code); // Send scanned ticket number
+      if (Quagga._scannerRunning) {
+        Quagga.stop();
+        Quagga._scannerRunning = false;
+        setScanning(false);
+        onScanSuccess(result.codeResult.code);
+      }
     });
   };
 
@@ -54,7 +72,7 @@ const BarcodeScanner = ({ onScanSuccess }) => {
         {scanning ? "Scanning..." : "Scan Ticket"}
       </button>
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <div ref={videoRef} style={{ width: "100%", maxWidth: "500px" }}></div>
+      <div ref={videoRef} style={{ width: "100%", maxWidth: "500px", height: "400px", background: "#000" }}></div>
     </div>
   );
 };
