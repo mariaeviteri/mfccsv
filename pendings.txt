@@ -1,0 +1,7 @@
+# mfcc ticket scanner app -> still hosting in vercel ? 
+Default values in db
+//there is a mfcc db transfer those values to db
+Scan ticket (input: number 1-500) 
+ex. Scan ticket button pressed-> barcode scanner pops up reads 123 -> check if ticket is paid. if false, modal warning to pay w/ pay button under. If true, update checked_in bool, update equipos guest array with ticket number & name, add 1 to occupied seats, check if occupied seats == total seats if that is the case then change status field to “full” (do we want to be able to update the ticket with the person’s name & equipo). Green modal pops up verifying check in. If occupied seats goes up from last state seating table is updated with one additional greyed out chair.
+TTD: functionality: 
+Fix ui, test scanning ticket, check the seating ui update 
